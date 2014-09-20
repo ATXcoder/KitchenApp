@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="home.citadel.apps.inventory.CreateItem">
+
+    <LinearLayout
+        android:id="@+id/block_itemName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/Labels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_itemName"/>
+
+        <EditText
+            android:id="@+id/txt_itemName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/block_upc"
+        android:layout_below="@id/block_itemName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/Labels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_upc"/>
+
+        <EditText
+            android:id="@+id/txt_upc"
+            android:inputType="number"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/block_qty"
+        android:layout_below="@id/block_upc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/Labels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_qty"/>
+
+        <EditText
+            android:id="@+id/txt_qty"
+            android:inputType="number"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/bttn_save"
+        android:layout_below="@id/block_qty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Save"/>
+
+
+</RelativeLayout>

@@ -12,5 +12,6 @@
     <string name="label_upc">UPC</string>
     <string name="label_qty">Quantity</string>
     <string name="title_activity_lists">Lists</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>

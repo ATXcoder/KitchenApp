@@ -1,8 +1,10 @@
 package home.citadel.apps.inventory;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,8 @@ import java.io.InputStreamReader;
 
 public class CreateItem extends Activity {
 
+    private final String LOG_KEY = "Inventory";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,7 @@ public class CreateItem extends Activity {
 
         // Get buttons
         Button bttn_save = (Button)findViewById(R.id.bttn_save);
+
         // Get the inputs
         final EditText itemName = (EditText)findViewById(R.id.txt_itemName);
         final EditText itemUPC = (EditText)findViewById(R.id.txt_upc);
@@ -87,6 +92,7 @@ public class CreateItem extends Activity {
         // Call to API to save item
         @Override
         protected JSONObject doInBackground(String... strings) {
+
             JSONObject item = new JSONObject();
             JSONObject responseObject = null;
 
@@ -96,8 +102,12 @@ public class CreateItem extends Activity {
                 String result = null;
 
 
+                // Get database URL
+                String dbURL = Settings.Read(getApplicationContext(), "pref_db");
+                dbURL = dbURL + "items";
+
                 HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost("http://atxcoder.ddns.net:82/api/v1/menu/items");
+                HttpPost post = new HttpPost(dbURL);
 
 
                 item.put("name",strings[0]);
@@ -145,7 +155,7 @@ public class CreateItem extends Activity {
                 String validation = result.getString("valid");
                 String message = result.getString("message");
 
-                Log.i("Inventory", message);
+                Log.i(LOG_KEY, message);
 
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             } catch (Exception e)

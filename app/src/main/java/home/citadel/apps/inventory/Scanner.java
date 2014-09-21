@@ -6,9 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.zxing.Result;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,7 +14,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +26,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class Scanner extends Activity implements ZXingScannerView.ResultHandler {
 
     private ZXingScannerView mScannerView;
+    private final String LOG_KEY = "Inventory";
 
 
     @Override
@@ -48,13 +46,18 @@ public class Scanner extends Activity implements ZXingScannerView.ResultHandler 
 
     @Override
     public void handleResult(Result result) {
-        Log.i("Inventory", result.getText()); // Prints scan results
-        Log.i("Inventory", result.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        Log.i(LOG_KEY, result.getText()); // Prints scan results
+        Log.i(LOG_KEY, result.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+
+        // Get root database URL from preferences
+        String dbURL = Settings.Read(getApplicationContext(), "pref_db");
+        Log.i(LOG_KEY, "Database URL: " + dbURL);
+
         //Build out URL
-        String url = "http://atxcoder.ddns.net:82/api/v1/menu/items/" + result.getText();
-        Log.i("Inventory", "API URL: " + url);
+        dbURL = dbURL + "items/" + result.getText();
+        Log.i(LOG_KEY, "API URL: " + dbURL);
         ScanItem scan = new ScanItem();
-        scan.execute(url);
+        scan.execute(dbURL);
     }
 
     private class ScanItem extends AsyncTask<String, Void, JSONObject> {
@@ -96,7 +99,7 @@ public class Scanner extends Activity implements ZXingScannerView.ResultHandler 
                 }
                 result = sb.toString();
 
-                Log.i("Inventory", "JSON String: " + result);
+                Log.i(LOG_KEY, "JSON String: " + result);
 
                 // Create a JSON Object from result
                 JSONObject jObject = new JSONObject(result);
@@ -104,13 +107,13 @@ public class Scanner extends Activity implements ZXingScannerView.ResultHandler 
                 String validation = jObject.getString("valid");
                 String message = jObject.getString("message");
 
-                Log.i("Inventory", "Valid: " + validation + " \n Message: " + message);
+                Log.i(LOG_KEY, "Valid: " + validation + " \n Message: " + message);
 
                 responseObject = jObject;
 
             } catch (Exception e) {
 
-                Log.e("Inventory", "ERR: " + e.getMessage());
+                Log.e(LOG_KEY, "ERR: " + e.getMessage());
             }
             finally {
                 try{if(inputStream != null)inputStream.close();}catch(Exception squish){}
@@ -120,17 +123,11 @@ public class Scanner extends Activity implements ZXingScannerView.ResultHandler 
 
         @Override
         protected void onPostExecute(JSONObject result) {
-            // execution of result of Long time consuming operation
-           // Toast.makeText(getApplicationContext(),result.toString(),Toast.LENGTH_LONG).show();
-            //Log.i("Inventory", "JSONObj: " + result.toString());
-
 
             try {
                 String validation = result.getString("valid");
                 String message = result.getString("message");
                 String source = result.getString("source");
-
-
 
                 // Make sure we didn't get a error back
                 if(validation.equals("false"))
@@ -163,10 +160,6 @@ public class Scanner extends Activity implements ZXingScannerView.ResultHandler 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-
-
 
         }
     }
